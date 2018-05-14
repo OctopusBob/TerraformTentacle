@@ -23,8 +23,8 @@ resource "aws_instance" "example" {
   }
 
   tags {
-    Name = "Octopus 3.18 Release Tour"
-    OwnerContact = "RobPearson"
+    Name = "Terraform Demo"
+    OwnerContact = "Bob Walker"
   }
 
 }
