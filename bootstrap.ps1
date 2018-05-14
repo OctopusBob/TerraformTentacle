@@ -109,7 +109,7 @@ function Install-Tentacle
   if ($lastExitCode -ne 0) {
     throw "Installation failed on configure"
   }
-  & .\tentacle.exe register-with --instance "Tentacle" --server $octopusServerUrl --role "Database" --role "Web" --environment "Dev" --environment "Test" --environment "Pre-Prod" --environment "Production" --environment "TearDown" --name $env:COMPUTERNAME --publicHostName $ipAddress --apiKey $apiKey --comms-style TentaclePassive --force --console | Write-Host
+  & .\tentacle.exe register-with --instance "Tentacle" --server $octopusServerUrl --role "Database-TerraForm" --role "Web-TerraForm" --environment "Dev" --environment "Test" --environment "Pre-Prod" --environment "Production" --environment "TearDown" --name $env:COMPUTERNAME --publicHostName $ipAddress --apiKey $apiKey --comms-style TentaclePassive --force --console | Write-Host
   if ($lastExitCode -ne 0) {
     throw "Installation failed on register-with"
   }
