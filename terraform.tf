@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_instance" "example" {
-  ami = "ami-e3a2f79f"
+  ami = "ami-ac8dbdc9"
 
   subnet_id                   = "${var.aws-subnet-id}"
   vpc_security_group_ids      = ["${var.aws-vpc-security-group-id}"]

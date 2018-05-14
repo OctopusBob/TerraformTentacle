@@ -1,12 +1,23 @@
 <powershell>
 Start-Transcript -path "C:\Bootstrap.txt" -append
 
+Dism /Online /Enable-Feature /FeatureName:IIS-ASPNET /All
+Dism /Online /Enable-Feature /FeatureName:IIS-ASPNET45 /All
+Dism /Online /Enable-Feature /FeatureName:IIS-CertProvider /All
+Dism /Online /Enable-Feature /FeatureName:IIS-HttpRedirect /All
+Dism /Online /Enable-Feature /FeatureName:IIS-BasicAuthentication /All
+Dism /Online /Enable-Feature /FeatureName:IIS-WebSockets /All
+Dism /Online /Enable-Feature /FeatureName:IIS-ApplicationInit /All
+Dism /Online /Enable-Feature /FeatureName:IIS-CustomLogging /All
+Dism /Online /Enable-Feature /FeatureName:IIS-ManagementService /All
+Dism /Online /Enable-Feature /FeatureName:WCF-Services45 /All
+Dism /Online /Enable-Feature /FeatureName:WCF-HTTP-Activation45 /All
+Dism /Online /Enable-Feature /FeatureName:IIS-WindowsAuthentication /All
+
 $tentacleDownloadPath = "https://octopus.com/downloads/latest/WindowsX64/OctopusTentacle"
 $octopusServerUrl = $env:OCTOPUS_URL
 $octopusApiKey = $env:OCTOPUS_API
 $octopusServerThumbprint = $env:OCTOPUS_THUMBPRINT
-$registerInEnvironments = "Development"
-$registerInRoles = "web"
 $tentacleListenPort = 10933
 $tentacleHomeDirectory = "C:\Octopus"
 $tentacleAppDirectory = "C:\Octopus\Applications"
@@ -40,11 +51,7 @@ function Install-Tentacle
      [Parameter(Mandatory=$True)]
      [string]$apiKey,
      [Parameter(Mandatory=$True)]
-     [System.Uri]$octopusServerUrl,
-     [Parameter(Mandatory=$True)]
-     [string]$environment,
-     [Parameter(Mandatory=$True)]
-     [string]$role
+     [System.Uri]$octopusServerUrl
   )
 
   Write-Output "Beginning Tentacle installation"
@@ -102,7 +109,7 @@ function Install-Tentacle
   if ($lastExitCode -ne 0) {
     throw "Installation failed on configure"
   }
-  & .\tentacle.exe register-with --instance "Tentacle" --server $octopusServerUrl --environment $environment --role $role --name $env:COMPUTERNAME --publicHostName $ipAddress --apiKey $apiKey --comms-style TentaclePassive --force --console | Write-Host
+  & .\tentacle.exe register-with --instance "Tentacle" --server $octopusServerUrl --role "Database" --role "Web" --environment "Dev" --environment "Test" --environment "Pre-Prod" --environment "Production" --environment "TearDown" --name $env:COMPUTERNAME --publicHostName $ipAddress --apiKey $apiKey --comms-style TentaclePassive --force --console | Write-Host
   if ($lastExitCode -ne 0) {
     throw "Installation failed on register-with"
   }
@@ -115,10 +122,7 @@ function Install-Tentacle
   Write-Output "Tentacle commands complete"
 }
 
-# Set Environment Variable for ASP.NET CORE
-[Environment]::SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "$registerInEnvironments", "Machine")
-
 # Install tentacle now ... 
-Install-Tentacle -apikey $octopusApiKey -octopusServerUrl $octopusServerUrl -environment $registerInEnvironments -role $registerInRoles
+Install-Tentacle -apikey $octopusApiKey -octopusServerUrl $octopusServerUrl
 
 </powershell>
